@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UntangleApi", "UntangleApi\UntangleApi.csproj", "{6EB9CD82-9C43-4485-980D-39BDC1160ADB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiTest", "ApiTest\ApiTest.csproj", "{EC5A6E3C-D50A-485A-8D79-61D5B231BA6B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6EB9CD82-9C43-4485-980D-39BDC1160ADB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EB9CD82-9C43-4485-980D-39BDC1160ADB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EB9CD82-9C43-4485-980D-39BDC1160ADB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EB9CD82-9C43-4485-980D-39BDC1160ADB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC5A6E3C-D50A-485A-8D79-61D5B231BA6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC5A6E3C-D50A-485A-8D79-61D5B231BA6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC5A6E3C-D50A-485A-8D79-61D5B231BA6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC5A6E3C-D50A-485A-8D79-61D5B231BA6B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
