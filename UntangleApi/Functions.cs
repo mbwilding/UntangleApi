@@ -11,7 +11,7 @@ public class UntangleApi : IDisposable
 {
     private JsonSerializerOptions _jsonOptions;
     private CookieWebClient _client;
-    private readonly bool _https;
+    private readonly bool _ssl;
     private readonly string _ipPort;
     private readonly string _username;
     private readonly string _password;
@@ -21,14 +21,14 @@ public class UntangleApi : IDisposable
     private readonly string _jsonRpcUri;
     private string _token;
 
-    public UntangleApi(string ipPort, string username, string password, bool https = true)
+    public UntangleApi(string ipPort, string username, string password, bool ssl = true)
     {
         _client = new CookieWebClient();
-        _https = https;
+        _ssl = ssl;
         _ipPort = ipPort;
         _username = username;
         _password = password;
-        _uri = $"http{(_https ? "s" : "")}://{_ipPort}";
+        _uri = $"http{(_ssl ? "s" : "")}://{_ipPort}";
         _loginUri = $"{_uri}/auth/login";
         _adminUri = $"{_uri}/admin";
         _jsonRpcUri = $"{_adminUri}/JSON-RPC";
