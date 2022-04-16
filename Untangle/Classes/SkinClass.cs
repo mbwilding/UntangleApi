@@ -3,7 +3,7 @@
 
 // ReSharper disable ClassNeverInstantiated.Global
 
-namespace UntangleApi.Classes;
+namespace Untangle.Classes;
 
 public class SkinClass
 {

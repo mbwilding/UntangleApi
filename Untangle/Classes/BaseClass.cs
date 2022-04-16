@@ -8,7 +8,7 @@
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnassignedField.Global
 
-namespace UntangleApi.Classes;
+namespace Untangle.Classes;
 
 public static class BaseClass
 {

@@ -6,10 +6,10 @@
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnassignedField.Global
 
-using static UntangleApi.Classes.BaseClass;
-using static UntangleApi.Classes.SkinClass;
+using static Untangle.Classes.BaseClass;
+using static Untangle.Classes.SkinClass;
 
-namespace UntangleApi.Classes;
+namespace Untangle.Classes;
 
 public class WebUiClass
 {

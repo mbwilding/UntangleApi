@@ -5,13 +5,13 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Serilog;
-using UntangleApi.SupportClasses;
-using static UntangleApi.Classes.BaseClass;
-using static UntangleApi.Classes.WebUiClass;
+using Untangle.SupportClasses;
+using static Untangle.Classes.BaseClass;
+using static Untangle.Classes.WebUiClass;
 
 namespace Untangle;
 
-public class Untangle : IDisposable
+public class UntangleApi : IDisposable
 {
     // ReSharper disable once MemberCanBePrivate.Global
     public WebUi? WebUi;
@@ -28,7 +28,7 @@ public class Untangle : IDisposable
     private readonly string _jsonRpcUri;
     private string _token = string.Empty;
 
-    public Untangle(string ipPort, string username, string password, bool ssl = true, bool logger = true)
+    public UntangleApi(string ipPort, string username, string password, bool ssl = true, bool logger = true)
     {
         if (logger)
             Logging();

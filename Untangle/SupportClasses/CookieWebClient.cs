@@ -1,6 +1,6 @@
 using System.Net;
 
-namespace UntangleApi.SupportClasses;
+namespace Untangle.SupportClasses;
 
 internal class CookieWebClient : WebClient
 {
