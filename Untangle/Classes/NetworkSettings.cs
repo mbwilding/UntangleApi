@@ -15,7 +15,7 @@ public class NetworkSettings
     public string HostName;
     public bool StrictArpMode;
     public string JavaClass;
-    // TODO BypassRules
+    public BypassRules BypassRules;
     public bool LogLocalInboundSessions;
     public bool DynamicDnsServiceEnabled;
     // TODO VirtualInterfaces
@@ -56,4 +56,34 @@ public class NetworkSettings
     // TODO UpnpSettings
     // TODO NatRules
     // TODO QosSettings
+}
+
+public class BypassRules
+{
+    public string JavaClass;
+    public List<BypassRule> List;
+}
+
+public class BypassRule
+{
+    public bool Bypass;
+    public string JavaClass;
+    public string Description;
+    public BypassRuleConditions Conditions;
+    public uint RuleId;
+    public bool Enabled;
+}
+
+public class BypassRuleConditions
+{
+    public string JavaClass;
+    public List<BypassRuleCondition> List;
+}
+
+public class BypassRuleCondition
+{
+    public bool Invert;
+    public string JavaClass;
+    public string? ConditionType;
+    public string Value;
 }
