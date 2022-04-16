@@ -5,6 +5,8 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
+        <AssemblyName>Untangle</AssemblyName>
+        <RootNamespace>Untangle</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

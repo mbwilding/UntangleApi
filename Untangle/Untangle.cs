@@ -9,9 +9,9 @@ using UntangleApi.SupportClasses;
 using static UntangleApi.Classes.BaseClass;
 using static UntangleApi.Classes.WebUiClass;
 
-namespace UntangleApi;
+namespace Untangle;
 
-public class UntangleApi : IDisposable
+public class Untangle : IDisposable
 {
     // ReSharper disable once MemberCanBePrivate.Global
     public WebUi? WebUi;
@@ -28,7 +28,7 @@ public class UntangleApi : IDisposable
     private readonly string _jsonRpcUri;
     private string _token = string.Empty;
 
-    public UntangleApi(string ipPort, string username, string password, bool ssl = true, bool logger = true)
+    public Untangle(string ipPort, string username, string password, bool ssl = true, bool logger = true)
     {
         if (logger)
             Logging();
