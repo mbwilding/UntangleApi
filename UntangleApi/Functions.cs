@@ -84,7 +84,7 @@ public class UntangleApi : IDisposable
 
             if (Encoding.Default.GetString(response) == "0")
             {
-                Log.Information("Authenticated");
+                Log.Debug("Authenticated");
                 return true;
             }
 
