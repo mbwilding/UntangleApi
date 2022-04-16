@@ -16,13 +16,13 @@ public static class Exchange
         public int Id;
     }
     
-    public class ResponseObject
+    public class ResponseAppManager
     {
-        public Result Result;
+        public ResultAppManager Result;
         public int Id;
     }
 
-    public class Result
+    public class ResultAppManager
     {
         public string JavaClass { get; set; }
         public string JsonRpcType { get; set; }

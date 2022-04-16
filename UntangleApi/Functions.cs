@@ -144,7 +144,7 @@ public class UntangleApi : IDisposable
     {
         try
         {
-            var response = await Execute<ResponseObject>("UvmContext.appManager");
+            var response = await Execute<ResponseAppManager>("UvmContext.appManager");
             _appManagerId = response.Result.ObjectId;
             Log.Debug("AppManagerId: {Id}", _appManagerId);
             return true;
