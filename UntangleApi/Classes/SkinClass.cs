@@ -1,4 +1,5 @@
-#pragma warning disable CS8618 | Non-nullable field is uninitialized
+// Non-nullable field is uninitialized
+#pragma warning disable CS8618
 
 // ReSharper disable ClassNeverInstantiated.Global
 
