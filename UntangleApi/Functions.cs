@@ -3,6 +3,7 @@ using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
+using Serilog;
 using static UntangleApi.Exchange;
 
 namespace UntangleApi;
@@ -21,8 +22,10 @@ public class UntangleApi : IDisposable
     private readonly string _jsonRpcUri;
     private string _token;
 
-    public UntangleApi(string ipPort, string username, string password, bool ssl = true)
+    public UntangleApi(string ipPort, string username, string password, bool ssl = true, bool logger = true)
     {
+        if (logger)
+            Logging();
         _client = new CookieWebClient();
         _ssl = ssl;
         _ipPort = ipPort;
@@ -42,10 +45,21 @@ public class UntangleApi : IDisposable
         };
     }
 
+    private void Logging()
+    {
+        Log.Logger = new LoggerConfiguration()
+            .MinimumLevel.Verbose()
+            .WriteTo.Console()
+            .CreateLogger();
+    }
+
     public async Task<bool> LoginAsync()
     {
         if (!await AuthenticationAsync())
             return false;
+        
+        _client.Headers.Remove("Content-Type");
+        _client.Headers.Add("Content-Type", "application/json");
         return await GetAuthenticationToken();
     }
     
@@ -65,17 +79,17 @@ public class UntangleApi : IDisposable
 
             if (Encoding.Default.GetString(response) == "0")
             {
-                Console.WriteLine("Authenticated");
+                Log.Information("Authenticated");
                 return true;
             }
 
-            Console.WriteLine("Invalid response");
+            Log.Error("Invalid response");
             return false;
 
         }
         catch (WebException)
         {
-            Console.WriteLine("Failed authentication");
+            Log.Error("Failed authentication");
         }
 
         return false;
@@ -83,33 +97,46 @@ public class UntangleApi : IDisposable
 
     private async Task<bool> GetAuthenticationToken()
     {
+        var result = await Execute<GetAuthenticationTokenResponse>("system.getNonce");
+        _token = result.Result;
+        Log.Debug("Token: {Token}", _token);
+        return true;
+    }
+
+    public async Task<T> Execute<T>(string method, string[]? parameters = null)
+    {
+        var request = new Request{ Method = method };
+        if (parameters is not null)
+            request.Params = parameters;
+
+        T response = default!;
+        
         try
         {
-            _client.Headers.Remove("Content-Type");
-            _client.Headers.Add("Content-Type", "application/json");
-            string jsonRequest = JsonSerializer.Serialize(new Request{ Method = "system.getNonce" }, _jsonOptions);
+            string jsonRequest = JsonSerializer.Serialize(request, _jsonOptions);
             string jsonResponse = await _client.UploadStringTaskAsync(_jsonRpcUri, jsonRequest);
             if (jsonResponse.Contains("{\"error\":"))
             {
                 var error = JsonSerializer.Deserialize<ErrorResponse>(jsonResponse, _jsonOptions);
                 // TODO Handle Error
-                Console.WriteLine($"Error: [{error.Error.Code}] {error.Error.Msg}");
-                return false;
+                Log.Error("{Code}: {Msg}", error!.Error.Code, error.Error.Msg);
+                return response;
             }
-            var tokenObject = JsonSerializer.Deserialize<GetAuthenticationTokenResponse>(jsonResponse, _jsonOptions);
-            _token = tokenObject!.Result;
-            Console.WriteLine("Token set");
-            return true;
+            response = JsonSerializer.Deserialize<T>(jsonResponse, _jsonOptions)!;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            Console.WriteLine("Failed token");
+            Log.Error(ex, "{Method}", method);
         }
 
-        return false;
+        return response;
     }
     
-    
+    // Main methods
+    public async Task<string> GetWebuiStartupInfo()
+    {
+        return await Execute<string>("UvmContext.getWebuiStartupInfo");
+    }
     
     public void Dispose()
     {
