@@ -4,7 +4,7 @@ namespace UntangleApi;
 
 internal class CookieWebClient : WebClient
 {
-    CookieContainer cookies = new CookieContainer();
+    CookieContainer cookies = new();
 
     // ReSharper disable once UnusedMember.Global
     public CookieContainer Cookies => cookies;
