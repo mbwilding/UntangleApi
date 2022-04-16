@@ -1,5 +1,7 @@
-// Non-nullable field is uninitialized
+//Non-nullable field is uninitialized
 #pragma warning disable CS8618
+// Non-accessed field
+#pragma warning disable CS0414
 // Unassigned field
 #pragma warning disable CS0649
 
@@ -18,7 +20,7 @@ public class WebUiClass
     {
         public WebUi Result;
         public uint Id;
-        // FixUps
+        // TODO FixUps
     }
 
     public class WebUi
@@ -33,7 +35,7 @@ public class WebUiClass
         public string RegionName;
         public int TimeZoneOffset;
         public SkinSettings SkinSettings;
-        public List<AppsViews> AppsViews;
+        public List<AppsView> AppsViews;
         public string CompanyUrl;
         public string ApplianceModel;
         public ResultObject NotificationManager;
@@ -49,7 +51,7 @@ public class WebUiClass
         public string Architecture;
         public ResultObject AdminManager;
         public ResultObject ExecManager;
-        // NetworkSettings
+        public NetworkSettings NetworkSettings;
         public ResultObject NetworkManager;
         public string FullVersionAndRevision;
         public LanguageSettings LanguageSettings;
