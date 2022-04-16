@@ -4,10 +4,10 @@ public static class Exchange
 {
     internal class Request
     {
-        public int Id { get; } = 297;
-        public string Nonce { set; get; }
-        public string Method { get; set; } = "system.getNonce";
-        public string[] Params { get; set; } = Array.Empty<string>();
+        public int Id = 297;
+        public string Nonce;
+        public string Method;
+        public string[] Params = Array.Empty<string>();
     }
 
     public class ResponseString
@@ -16,19 +16,8 @@ public static class Exchange
         public int Id;
     }
     
-    public class ResponseAppManager
-    {
-        public ResultAppManager Result;
-        public int Id;
-    }
-
-    public class ResultAppManager
-    {
-        public string JavaClass { get; set; }
-        public string JsonRpcType { get; set; }
-        public uint ObjectId { get; set; }
-    }
-
+    #region Error
+    
     internal class ErrorResponse
     {
         public Error Error;
@@ -39,4 +28,23 @@ public static class Exchange
         public string Msg;
         public int Code;
     }
+    
+    #endregion
+    
+    #region AppManager
+    
+    public class ResponseAppManager
+    {
+        public ResultAppManager Result;
+        public int Id;
+    }
+
+    public class ResultAppManager
+    {
+        public string JavaClass;
+        public string JsonRpcType;
+        public uint ObjectId;
+    }
+
+    #endregion
 }
