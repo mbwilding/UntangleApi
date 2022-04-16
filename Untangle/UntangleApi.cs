@@ -1,16 +1,15 @@
 ﻿// ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
+// ReSharper disable MemberCanBePrivate.Global
 
 using System.Collections.Specialized;
 using System.Net;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using Serilog;
 using Untangle.Classes;
 using Untangle.SupportClasses;
 using static Untangle.Classes.Base;
 using static Untangle.Classes.WebUiClass;
-using static Untangle.Classes.AdminSettings;
 
 namespace Untangle;
 
@@ -18,7 +17,7 @@ public class UntangleApi : IDisposable
 {
     // ReSharper disable once MemberCanBePrivate.Global
     public WebUi? WebUi;
-    public AdminSettings AdminSettings;
+    public AdminSettings? AdminSettings;
     
     private readonly JsonSerializerOptions _jsonOptions;
     private readonly CookieWebClient _client;
@@ -186,7 +185,7 @@ public class UntangleApi : IDisposable
         try
         {
             var response = await Execute<AdminSettingsResponse>(
-                $".obj#{WebUi.AdminManager.ObjectId}.getSettings",
+                $".obj#{WebUi!.AdminManager.ObjectId}.getSettings",
                 id: 124);
             AdminSettings = response.Result;
             Log.Debug("AdminSettings retrieved");
