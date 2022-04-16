@@ -105,7 +105,7 @@ public class UntangleApi : IDisposable
         _client.Headers.Remove("Content-Type");
         _client.Headers.Add("Content-Type", "application/json");
         
-        var result = await Execute<ResponseToken>("system.getNonce");
+        var result = await Execute<ResponseString>("system.getNonce");
         _token = result.Result;
         Log.Debug("Token: {Token}", _token);
         return true;
@@ -144,7 +144,7 @@ public class UntangleApi : IDisposable
     {
         try
         {
-            var response = await Execute<Response>("UvmContext.appManager");
+            var response = await Execute<ResponseObject>("UvmContext.appManager");
             _appManagerId = response.Result.ObjectId;
             Log.Debug("AppManagerId: {Id}", _appManagerId);
             return true;

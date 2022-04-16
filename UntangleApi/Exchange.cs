@@ -10,13 +10,13 @@ public static class Exchange
         public string[] Params { get; set; } = Array.Empty<string>();
     }
 
-    public class ResponseToken
+    public class ResponseString
     {
         public string Result;
         public int Id;
     }
     
-    public class Response
+    public class ResponseObject
     {
         public Result Result;
         public int Id;
