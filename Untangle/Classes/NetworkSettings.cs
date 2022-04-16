@@ -97,16 +97,16 @@ public class VirtualInterfaces
 public class VirtualInterface
 {
     // v6StaticDns2
-    // raEnabled
+    public bool? RaEnabled;
     // v6StaticDns1
     public string V4ConfigType;
-    // vrrpEnabled
+    public bool? VrrpEnabled;
     // wirelessChannel
     public uint WirelessVisibility;
     // dhcpOptions
     // v4StaticNetmask
     public string ConfigType;
-    // wirelessSsid
+    public string? WirelessSsid;
     public bool IsWirelessInterface;
     // v6Aliases
     // dhcpLeaseDuration

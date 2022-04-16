@@ -4,10 +4,13 @@ using System.Collections.Specialized;
 using System.Net;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Serilog;
+using Untangle.Classes;
 using Untangle.SupportClasses;
 using static Untangle.Classes.Base;
 using static Untangle.Classes.WebUiClass;
+using static Untangle.Classes.AdminSettings;
 
 namespace Untangle;
 
@@ -15,6 +18,7 @@ public class UntangleApi : IDisposable
 {
     // ReSharper disable once MemberCanBePrivate.Global
     public WebUi? WebUi;
+    public AdminSettings AdminSettings;
     
     private readonly JsonSerializerOptions _jsonOptions;
     private readonly CookieWebClient _client;
@@ -47,7 +51,8 @@ public class UntangleApi : IDisposable
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             WriteIndented = false,
             PropertyNameCaseInsensitive = true,
-            IncludeFields = true
+            IncludeFields = true,
+            //DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
         };
     }
 
@@ -67,11 +72,11 @@ public class UntangleApi : IDisposable
         if (!await GetAuthenticationToken())
             return false;
         
-        if (!await GetWebUiIds())
+        if (!await GetWebUi())
             return false;
         
-        //if (!await GetAppManagerId())
-        //    return false;
+        if (!await GetAdminSettings())
+            return false;
 
         return true;
     }
@@ -120,9 +125,12 @@ public class UntangleApi : IDisposable
     }
 
     // ReSharper disable once MemberCanBePrivate.Global
-    public async Task<T> Execute<T>(string method, string[]? parameters = null)
+    public async Task<T> Execute<T>(string method, string[]? parameters = null, uint id = 0)
     {
-        var request = new Request{ Method = method, Nonce = _token};
+        if (id == 0)
+            id = 297;
+
+        var request = new Request{ Method = method, Nonce = _token, Id = id };
         if (parameters is not null)
             request.Params = parameters;
 
@@ -149,7 +157,7 @@ public class UntangleApi : IDisposable
         return response;
     }
 
-    private async Task<bool> GetWebUiIds()
+    private async Task<bool> GetWebUi()
     {
         try
         {
@@ -161,6 +169,22 @@ public class UntangleApi : IDisposable
         catch
         {
             Log.Error("GetWebUiIds failed");
+            return false;
+        }
+    }
+    
+    private async Task<bool> GetAdminSettings()
+    {
+        try
+        {
+            var response = await Execute<AdminSettingsResponse>($".obj#{WebUi.AdminManager.ObjectId}.getSettings", id: 124);
+            AdminSettings = response.Result;
+            Log.Debug("AdminSettings retrieved");
+            return true;
+        }
+        catch
+        {
+            Log.Error("AdminSettings failed");
             return false;
         }
     }

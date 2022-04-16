@@ -25,12 +25,12 @@ public class WebUiClass
 
     public class WebUi
     {
-        public ResultObject MetricManager;
+        public ResponseObject MetricManager;
         public string ServerSerialnumber;
-        public ResultObject AppManager;
-        public ResultObject UriManager;
-        public ResultObject SystemManager;
-        public ResultObject BrandingManager;
+        public ResponseObject AppManager;
+        public ResponseObject UriManager;
+        public ResponseObject SystemManager;
+        public ResponseObject BrandingManager;
         public string CompanyName;
         public string RegionName;
         public int TimeZoneOffset;
@@ -38,36 +38,36 @@ public class WebUiClass
         public List<AppsView> AppsViews;
         public string CompanyUrl;
         public string ApplianceModel;
-        public ResultObject NotificationManager;
-        public ResultObject DashboardManager;
+        public ResponseObject NotificationManager;
+        public ResponseObject DashboardManager;
         public string HostName;
         public Translations Translations;
         public bool IsExpertMode;
         public string StoreUrl;
-        public ResultObject EventManager;
-        public ResultObject UserTable;
-        public ResultObject HostTable;
+        public ResponseObject EventManager;
+        public ResponseObject UserTable;
+        public ResponseObject HostTable;
         public bool SupportEnabled;
         public string Architecture;
-        public ResultObject AdminManager;
-        public ResultObject ExecManager;
+        public ResponseObject AdminManager;
+        public ResponseObject ExecManager;
         public NetworkSettings NetworkSettings;
-        public ResultObject NetworkManager;
+        public ResponseObject NetworkManager;
         public string FullVersionAndRevision;
         public LanguageSettings LanguageSettings;
         public string HelpUrl;
         public string Version;
-        public ResultObject LanguageManager;
-        public ResultObject AuthenticationManager;
+        public ResponseObject LanguageManager;
+        public ResponseObject AuthenticationManager;
         public string FullVersion;
-        public ResultObject SkinManager;
+        public ResponseObject SkinManager;
         public SkinInfo SkinInfo;
-        public ResultObject SessionMonitor;
-        public ResultObject SessionManager;
+        public ResponseObject SessionMonitor;
+        public ResponseObject SessionManager;
         public string ServerUid;
         public string InstallType;
         public bool IsRegistered;
-        public ResultObject DeviceTable;
+        public ResponseObject DeviceTable;
         public bool ReportsEnabled;
     }
 }

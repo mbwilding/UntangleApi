@@ -14,7 +14,7 @@ public static class Base
 {
     internal class Request
     {
-        public uint Id = 297;
+        public uint Id;
         public string Nonce;
         public string Method;
         public string[] Params = Array.Empty<string>();
@@ -26,7 +26,7 @@ public static class Base
         public uint Id;
     }
     
-    public class ResultObject
+    public class ResponseObject
     {
         public string JavaClass;
         public string JsonRpcType;
