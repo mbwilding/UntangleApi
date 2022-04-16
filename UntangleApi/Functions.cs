@@ -73,7 +73,7 @@ public class UntangleApi : IDisposable
             return false;
 
         }
-        catch (WebException ex)
+        catch (WebException)
         {
             Console.WriteLine("Failed authentication");
         }
@@ -87,7 +87,7 @@ public class UntangleApi : IDisposable
         {
             _client.Headers.Remove("Content-Type");
             _client.Headers.Add("Content-Type", "application/json");
-            string jsonRequest = JsonSerializer.Serialize(new GetAuthenticationTokenRequest(), _jsonOptions);
+            string jsonRequest = JsonSerializer.Serialize(new Request{ Method = "system.getNonce" }, _jsonOptions);
             string jsonResponse = await _client.UploadStringTaskAsync(_jsonRpcUri, jsonRequest);
             if (jsonResponse.Contains("{\"error\":"))
             {
@@ -101,13 +101,15 @@ public class UntangleApi : IDisposable
             Console.WriteLine("Token set");
             return true;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             Console.WriteLine("Failed token");
         }
 
         return false;
     }
+    
+    
     
     public void Dispose()
     {
