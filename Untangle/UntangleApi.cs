@@ -127,7 +127,7 @@ public class UntangleApi : IDisposable
         
         var result = await Execute<ResponseString>("system.getNonce");
         _token = result.Result;
-        Log.Debug("Token: {Token}", _token);
+        Log.Debug("Token retrieved");
         return true;
     }
 
