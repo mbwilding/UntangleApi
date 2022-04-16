@@ -6,10 +6,10 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using Serilog;
-using Untangle.Classes;
 using Untangle.SupportClasses;
 using static Untangle.Classes.Base;
 using static Untangle.Classes.WebUiClass;
+using static Untangle.Classes.AdminSettingsClass;
 
 namespace Untangle;
 
@@ -132,14 +132,14 @@ public class UntangleApi : IDisposable
     }
 
     // ReSharper disable once MemberCanBePrivate.Global
-    public async Task<T> Execute<T>(string method, string[]? parameters = null, uint id = 0)
+    public async Task<T> Execute<T>(string method, object parameters = null!, uint id = 0)
     {
         if (id == 0)
             id = 297;
 
-        var request = new Request{ Method = method, Nonce = _token, Id = id };
+        var request = new Request{ Method = method, Nonce = _token, Id = id, Params = Array.Empty<string>() };
         if (parameters is not null)
-            request.Params = parameters;
+            request.Params = new[] {parameters};
 
         T response = default!;
         
@@ -189,6 +189,24 @@ public class UntangleApi : IDisposable
                 id: 124);
             AdminSettings = response.Result;
             Log.Debug("AdminSettings retrieved");
+            return true;
+        }
+        catch
+        {
+            Log.Error("AdminSettings failed");
+            return false;
+        }
+    }
+    
+    public async Task<bool> SetAdminSettingsAsync()
+    {
+        try
+        {
+            var response = await Execute<ResponseString>(
+                $".obj#{WebUi!.AdminManager.ObjectId}.setSettings",
+                AdminSettings!,
+                id: 179);
+            Log.Debug("AdminSettings set");
             return true;
         }
         catch

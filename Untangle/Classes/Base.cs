@@ -17,7 +17,7 @@ public static class Base
         public uint Id;
         public string Nonce;
         public string Method;
-        public string[] Params = Array.Empty<string>();
+        public object Params;
     }
     
     public class ResponseString
