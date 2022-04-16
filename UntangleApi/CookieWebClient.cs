@@ -6,6 +6,7 @@ internal class CookieWebClient : WebClient
 {
     CookieContainer cookies = new CookieContainer();
 
+    // ReSharper disable once UnusedMember.Global
     public CookieContainer Cookies => cookies;
 
     protected override WebRequest GetWebRequest(Uri address)

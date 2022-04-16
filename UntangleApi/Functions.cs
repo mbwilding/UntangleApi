@@ -1,9 +1,10 @@
-﻿using System.Collections.Specialized;
+﻿// ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
+
+using System.Collections.Specialized;
 using System.Net;
 using System.Text;
 using System.Text.Json;
 using Serilog;
-using UntangleApi.Classes;
 using static UntangleApi.Classes.Base;
 using static UntangleApi.Classes.WebUiClass;
 
@@ -11,8 +12,11 @@ namespace UntangleApi;
 
 public class UntangleApi : IDisposable
 {
-    private JsonSerializerOptions _jsonOptions;
-    private CookieWebClient _client;
+    // ReSharper disable once MemberCanBePrivate.Global
+    public WebUi? WebUi;
+    
+    private readonly JsonSerializerOptions _jsonOptions;
+    private readonly CookieWebClient _client;
     private readonly bool _ssl;
     private readonly string _ipPort;
     private readonly string _username;
@@ -22,7 +26,6 @@ public class UntangleApi : IDisposable
     private readonly string _adminUri;
     private readonly string _jsonRpcUri;
     private string _token = string.Empty;
-    public WebUi WebUi;
 
     public UntangleApi(string ipPort, string username, string password, bool ssl = true, bool logger = true)
     {
@@ -115,6 +118,7 @@ public class UntangleApi : IDisposable
         return true;
     }
 
+    // ReSharper disable once MemberCanBePrivate.Global
     public async Task<T> Execute<T>(string method, string[]? parameters = null)
     {
         var request = new Request{ Method = method, Nonce = _token};

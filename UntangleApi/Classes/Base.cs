@@ -1,3 +1,10 @@
+#pragma warning disable CS8618 | Non-nullable field is uninitialized
+#pragma warning disable CS0649 | Unassigned field
+#pragma warning disable CS0414 | Non-accessed field
+
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnassignedField.Global
+
 namespace UntangleApi.Classes;
 
 public static class Base
@@ -46,14 +53,14 @@ public static class Base
 
     public class LanguageSettings
     {
-        public string? OverrideDateFmt;
-        public string? OverrideTimestampFmt;
-        public int? LastSynchronized;
-        public string? OverrideDecimalSep;
-        public string? JavaClass;
-        public string? Language;
-        public string? RegionalFormats;
-        public string? OverrideThousandSep;
-        public string? Source;
+        public string OverrideDateFmt;
+        public string OverrideTimestampFmt;
+        public int LastSynchronized;
+        public string OverrideDecimalSep;
+        public string JavaClass;
+        public string Language;
+        public string RegionalFormats;
+        public string OverrideThousandSep;
+        public string Source;
     }
 }

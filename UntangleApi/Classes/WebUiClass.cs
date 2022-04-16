@@ -1,3 +1,9 @@
+#pragma warning disable CS8618 | Non-nullable field is uninitialized
+#pragma warning disable CS0649 | Unassigned field
+
+// ReSharper disable ClassNeverInstantiated.Global
+// ReSharper disable UnassignedField.Global
+
 using static UntangleApi.Classes.Base;
 using static UntangleApi.Classes.SkinClass;
 
