@@ -177,7 +177,9 @@ public class UntangleApi : IDisposable
     {
         try
         {
-            var response = await Execute<AdminSettingsResponse>($".obj#{WebUi.AdminManager.ObjectId}.getSettings", id: 124);
+            var response = await Execute<AdminSettingsResponse>(
+                $".obj#{WebUi.AdminManager.ObjectId}.getSettings",
+                id: 124);
             AdminSettings = response.Result;
             Log.Debug("AdminSettings retrieved");
             return true;
