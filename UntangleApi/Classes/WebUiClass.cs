@@ -6,7 +6,7 @@
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnassignedField.Global
 
-using static UntangleApi.Classes.Base;
+using static UntangleApi.Classes.BaseClass;
 using static UntangleApi.Classes.SkinClass;
 
 namespace UntangleApi.Classes;

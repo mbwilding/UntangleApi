@@ -10,7 +10,7 @@
 
 namespace UntangleApi.Classes;
 
-public static class Base
+public static class BaseClass
 {
     internal class Request
     {
