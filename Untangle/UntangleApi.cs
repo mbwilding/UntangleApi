@@ -6,7 +6,7 @@ using System.Text;
 using System.Text.Json;
 using Serilog;
 using Untangle.SupportClasses;
-using static Untangle.Classes.BaseClass;
+using static Untangle.Classes.Base;
 using static Untangle.Classes.WebUiClass;
 
 namespace Untangle;

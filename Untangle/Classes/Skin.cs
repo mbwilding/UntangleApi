@@ -5,7 +5,7 @@
 
 namespace Untangle.Classes;
 
-public class SkinClass
+public class Skin
 {
     public class SkinSettings
     {
