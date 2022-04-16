@@ -1,19 +1,32 @@
 namespace UntangleApi;
 
-internal static class Exchange
+public static class Exchange
 {
     internal class Request
     {
         public int Id { get; } = 297;
-        public string Nonce { get; } = "ec61pq84h9ov52ev9nurmldr95";
+        public string Nonce { set; get; }
         public string Method { get; set; } = "system.getNonce";
         public string[] Params { get; set; } = Array.Empty<string>();
     }
 
-    internal class GetAuthenticationTokenResponse
+    public class ResponseToken
     {
         public string Result;
         public int Id;
+    }
+    
+    public class Response
+    {
+        public Result Result;
+        public int Id;
+    }
+
+    public class Result
+    {
+        public string JavaClass { get; set; }
+        public string JsonRpcType { get; set; }
+        public uint ObjectId { get; set; }
     }
 
     internal class ErrorResponse

@@ -20,7 +20,8 @@ public class UntangleApi : IDisposable
     private readonly string _loginUri;
     private readonly string _adminUri;
     private readonly string _jsonRpcUri;
-    private string _token;
+    private string _token = string.Empty;
+    private uint _appManagerId;
 
     public UntangleApi(string ipPort, string username, string password, bool ssl = true, bool logger = true)
     {
@@ -53,14 +54,18 @@ public class UntangleApi : IDisposable
             .CreateLogger();
     }
 
-    public async Task<bool> LoginAsync()
+    public async Task<bool> StartAsync()
     {
         if (!await AuthenticationAsync())
             return false;
         
-        _client.Headers.Remove("Content-Type");
-        _client.Headers.Add("Content-Type", "application/json");
-        return await GetAuthenticationToken();
+        if (!await GetAuthenticationToken())
+            return false;
+        
+        if (!await GetAppManagerId())
+            return false;
+
+        return true;
     }
     
     private async Task<bool> AuthenticationAsync()
@@ -97,7 +102,10 @@ public class UntangleApi : IDisposable
 
     private async Task<bool> GetAuthenticationToken()
     {
-        var result = await Execute<GetAuthenticationTokenResponse>("system.getNonce");
+        _client.Headers.Remove("Content-Type");
+        _client.Headers.Add("Content-Type", "application/json");
+        
+        var result = await Execute<ResponseToken>("system.getNonce");
         _token = result.Result;
         Log.Debug("Token: {Token}", _token);
         return true;
@@ -105,7 +113,7 @@ public class UntangleApi : IDisposable
 
     public async Task<T> Execute<T>(string method, string[]? parameters = null)
     {
-        var request = new Request{ Method = method };
+        var request = new Request{ Method = method, Nonce = _token};
         if (parameters is not null)
             request.Params = parameters;
 
@@ -115,7 +123,7 @@ public class UntangleApi : IDisposable
         {
             string jsonRequest = JsonSerializer.Serialize(request, _jsonOptions);
             string jsonResponse = await _client.UploadStringTaskAsync(_jsonRpcUri, jsonRequest);
-            if (jsonResponse.Contains("{\"error\":"))
+            if (jsonResponse.Contains("error"))
             {
                 var error = JsonSerializer.Deserialize<ErrorResponse>(jsonResponse, _jsonOptions);
                 // TODO Handle Error
@@ -131,13 +139,25 @@ public class UntangleApi : IDisposable
 
         return response;
     }
-    
-    // Main methods
-    public async Task<string> GetWebuiStartupInfo()
+
+    public async Task<bool> GetAppManagerId()
     {
-        return await Execute<string>("UvmContext.getWebuiStartupInfo");
+        try
+        {
+            var response = await Execute<Response>("UvmContext.appManager");
+            _appManagerId = response.Result.ObjectId;
+            Log.Debug("AppManagerId: {Id}", _appManagerId);
+            return true;
+        }
+        catch
+        {
+            Log.Error("AppManagerId not set");
+            return false;
+        }
     }
     
+    public async Task<string> GetWebuiStartupInfo() => await Execute<string>("UvmContext.getWebuiStartupInfo"); // TODO
+
     public void Dispose()
     {
         _client.Dispose();
