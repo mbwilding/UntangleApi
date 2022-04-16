@@ -1,10 +1,11 @@
 ﻿using System.Collections.Specialized;
 using System.Net;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using Serilog;
-using static UntangleApi.Exchange;
+using UntangleApi.Classes;
+using static UntangleApi.Classes.Base;
+using static UntangleApi.Classes.WebUiClass;
 
 namespace UntangleApi;
 
@@ -21,7 +22,7 @@ public class UntangleApi : IDisposable
     private readonly string _adminUri;
     private readonly string _jsonRpcUri;
     private string _token = string.Empty;
-    private uint _appManagerId;
+    public WebUi WebUi;
 
     public UntangleApi(string ipPort, string username, string password, bool ssl = true, bool logger = true)
     {
@@ -62,12 +63,15 @@ public class UntangleApi : IDisposable
         if (!await GetAuthenticationToken())
             return false;
         
-        if (!await GetAppManagerId())
+        if (!await GetWebUiIds())
             return false;
+        
+        //if (!await GetAppManagerId())
+        //    return false;
 
         return true;
     }
-    
+
     private async Task<bool> AuthenticationAsync()
     {
         _client.Headers.Remove("Content-Type");
@@ -123,7 +127,7 @@ public class UntangleApi : IDisposable
         {
             string jsonRequest = JsonSerializer.Serialize(request, _jsonOptions);
             string jsonResponse = await _client.UploadStringTaskAsync(_jsonRpcUri, jsonRequest);
-            if (jsonResponse.Contains("error"))
+            if (jsonResponse.Contains("\"error\""))
             {
                 var error = JsonSerializer.Deserialize<ErrorResponse>(jsonResponse, _jsonOptions);
                 // TODO Handle Error
@@ -140,23 +144,21 @@ public class UntangleApi : IDisposable
         return response;
     }
 
-    public async Task<bool> GetAppManagerId()
+    private async Task<bool> GetWebUiIds()
     {
         try
         {
-            var response = await Execute<ResponseAppManager>("UvmContext.appManager");
-            _appManagerId = response.Result.ObjectId;
-            Log.Debug("AppManagerId: {Id}", _appManagerId);
+            var response = await Execute<ResponseWebUi>("UvmContext.getWebuiStartupInfo");
+            WebUi = response.Result;
+            Log.Debug("GetWebUiIds retrieved");
             return true;
         }
         catch
         {
-            Log.Error("AppManagerId not set");
+            Log.Error("GetWebUiIds failed");
             return false;
         }
     }
-    
-    public async Task<string> GetWebuiStartupInfo() => await Execute<string>("UvmContext.getWebuiStartupInfo"); // TODO
 
     public void Dispose()
     {
