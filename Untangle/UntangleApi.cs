@@ -23,7 +23,7 @@ public class UntangleApi : IDisposable
     private readonly JsonSerializerOptions _jsonOptions;
     private readonly CookieWebClient _client;
     private readonly bool _ssl;
-    private readonly string _ipPort;
+    private readonly string _host;
     private readonly string _username;
     private readonly string _password;
     private readonly string _uri;
@@ -32,16 +32,24 @@ public class UntangleApi : IDisposable
     private readonly string _jsonRpcUri;
     private string _token = string.Empty;
 
-    public UntangleApi(string ipPort, string username, string password, bool ssl = true, bool logger = true)
+    /// <summary>
+    /// The main class to work with UntangleAPI
+    /// </summary>
+    /// <param name="host">Can be an IP or HostName, can append with a custom port using ':'</param>
+    /// <param name="username">Username</param>
+    /// <param name="password">Password</param>
+    /// <param name="ssl">Enable if Untangle is using HTTPS/SSL</param>
+    /// <param name="logger">Enable if you want console feedback from this API</param>
+    public UntangleApi(string host, string username, string password, bool ssl = false, bool logger = true)
     {
         if (logger)
             Logging();
         _client = new CookieWebClient();
         _ssl = ssl;
-        _ipPort = ipPort;
+        _host = host;
         _username = username;
         _password = password;
-        _uri = $"http{(_ssl ? "s" : "")}://{_ipPort}";
+        _uri = $"http{(_ssl ? "s" : "")}://{_host}";
         _loginUri = $"{_uri}/auth/login";
         _adminUri = $"{_uri}/admin";
         _jsonRpcUri = $"{_adminUri}/JSON-RPC";
