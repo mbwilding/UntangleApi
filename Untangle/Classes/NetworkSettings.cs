@@ -18,7 +18,7 @@ public class NetworkSettings
     public BypassRules BypassRules;
     public bool LogLocalInboundSessions;
     public bool DynamicDnsServiceEnabled;
-    // TODO VirtualInterfaces
+    public VirtualInterfaces VirtualInterfaces;
     public bool BlockDuringRestarts;
     public ushort HttpsPort;
     public string DynamicDnsServiceHostnames;
@@ -86,4 +86,82 @@ public class BypassRuleCondition
     public string JavaClass;
     public string? ConditionType;
     public string Value;
+}
+
+public class VirtualInterfaces
+{
+    public string JavaClass;
+    public List<VirtualInterface> List;
+}
+
+public class VirtualInterface
+{
+    // v6StaticDns2
+    // raEnabled
+    // v6StaticDns1
+    public string V4ConfigType;
+    // vrrpEnabled
+    // wirelessChannel
+    public uint WirelessVisibility;
+    // dhcpOptions
+    // v4StaticNetmask
+    public string ConfigType;
+    // wirelessSsid
+    public bool IsWirelessInterface;
+    // v6Aliases
+    // dhcpLeaseDuration
+    // v4AutoDns2Override
+    // dhcpNetmaskOverride
+    // dhcpPrefixOverride
+    public bool IsWan;
+    // v4StaticGateway
+    // systemDev
+    // v4NatEgressTraffic
+    // bridgedTo
+    // downloadBandwidthKbps
+    // v6StaticPrefixLength
+    // v4AutoPrefixOverride
+    // wirelessEncryption
+    public string Name;
+    public bool IsVirtualInterface;
+    // v4PPPoEUsePeerDns
+    // v6StaticGateway
+    // uploadBandwidthKbps
+    public string V6ConfigType;
+    public bool IsVlanInterface;
+    // v4AutoAddressOverride
+    public string WirelessMode;
+    // vlanTag
+    // hidden
+    public string JavaClass;
+    // v4StaticAddress
+    // v4PPPoEPassword
+    // v6StaticAddress
+    // v4PPPoEDns2
+    // v4PPPoEDns1
+    // dhcpDnsOverride
+    // supportedConfigTypes
+    // v4PPPoEUsername
+    // wirelessPassword
+    // v4NatIngressTraffic
+    // v4StaticDns2
+    // v4StaticDns1
+    // v4AutoDns1Override
+    // symbolicDev
+    // v4Aliases
+    // dhcpRangeStart
+    // vrrpId
+    // vlanParent
+    // dhcpGatewayOverride
+    // imqDev
+    // v4AutoGatewayOverride
+    // physicalDev
+    // v4PPPoERootDev
+    // vrrpAliases
+    public uint interfaceId;
+    // v4StaticPrefix
+    // dhcpEnabled
+    // v4AutoNetmaskOverride
+    // dhcpRangeEnd
+    // vrrpPriority
 }
