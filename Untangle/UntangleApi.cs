@@ -37,12 +37,13 @@ public class UntangleApi : IDisposable
     /// <param name="host">Can be an IP or HostName, can append with a custom port using ':'</param>
     /// <param name="username">Username</param>
     /// <param name="password">Password</param>
-    /// <param name="ssl">Enable if Untangle is using HTTPS/SSL</param>
-    /// <param name="logger">Enable if you want console feedback from this API</param>
-    public UntangleApi(string host, string username, string password, bool ssl = false, bool logger = true)
+    /// <param name="ssl">HTTPS/SSL</param>
+    /// <param name="logger">Console logging from this API</param>
+    /// <param name="loggerVerbose">Verbose console logging</param>
+    public UntangleApi(string host,string username, string password, bool ssl = false, bool logger = true, bool loggerVerbose = false)
     {
         if (logger)
-            Logging.Init();
+            Logging.Init(loggerVerbose);
         _client = new CookieWebClient();
         _ssl = ssl;
         _host = host;

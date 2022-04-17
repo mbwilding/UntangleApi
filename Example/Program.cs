@@ -1,7 +1,4 @@
 ﻿// Unreachable code
-
-using Serilog;
-
 #pragma warning disable CS0162
 
 var untangle = new Untangle.UntangleApi(
@@ -9,6 +6,7 @@ var untangle = new Untangle.UntangleApi(
     "admin",
     "Password123!!",
     false,
+    true,
     true);
 
 if (!await untangle.StartAsync()) return;

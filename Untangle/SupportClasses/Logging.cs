@@ -7,11 +7,21 @@ public static class Logging
     /// <summary>
     /// Initializes Serilog
     /// </summary>
-    internal static void Init()
+    public static void Init(bool verbose = false)
     {
-        Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Verbose()
-            .WriteTo.Console()
-            .CreateLogger();
+        if (verbose)
+        {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Verbose()
+                .WriteTo.Console()
+                .CreateLogger();
+        }
+        else
+        {
+            Log.Logger = new LoggerConfiguration()
+                .MinimumLevel.Information()
+                .WriteTo.Console()
+                .CreateLogger();
+        }
     }
 }
