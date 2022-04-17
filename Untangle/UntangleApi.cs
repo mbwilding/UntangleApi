@@ -12,9 +12,15 @@ using static Untangle.Classes.AdminSettingsClass;
 
 namespace Untangle;
 
+// ReSharper disable MemberCanBePrivate.Global
+
 public class UntangleApi : IDisposable
 {
-    // ReSharper disable once MemberCanBePrivate.Global
+    /// <summary>
+    /// Used for internal classes to reference this
+    /// </summary>
+    internal static UntangleApi? Untangle;
+    
     public WebUi? WebUi;
     public AdminSettings? AdminSettings;
 
@@ -42,6 +48,7 @@ public class UntangleApi : IDisposable
     /// <param name="loggerVerbose">Verbose console logging</param>
     public UntangleApi(string host,string username, string password, bool ssl = false, bool logger = true, bool loggerVerbose = true)
     {
+        Untangle = this;
         if (logger)
             Logging.Init(loggerVerbose);
         _client = new CookieWebClient();
@@ -205,26 +212,6 @@ public class UntangleApi : IDisposable
                 $".obj#{WebUi!.AdminManager.ObjectId}.getSettings");
             AdminSettings = response.Result;
             Log.Debug("AdminSettings retrieved");
-            return true;
-        }
-        catch
-        {
-            Log.Error("AdminSettings failed");
-            return false;
-        }
-    }
-    
-    /// <summary>
-    /// Sets the remote AdminSettings from local
-    /// </summary>
-    public async Task<bool> SetAdminSettingsAsync()
-    {
-        try
-        {
-            var response = await ExecuteAsync<ResponseString>(
-                $".obj#{WebUi!.AdminManager.ObjectId}.setSettings",
-                AdminSettings!);
-            Log.Debug("AdminSettings set");
             return true;
         }
         catch

@@ -10,8 +10,12 @@ if (!await untangle.StartAsync()) return;
 
 if (false)
 {
-    untangle.AdminSettings!.Users.List.FirstOrDefault()!.Password = "Password123!!";
-    await untangle.SetAdminSettingsAsync();
+    // Local: Change admin password
+    untangle.AdminSettings!.Users.List
+        .First(x => x.Username == "admin")
+        .Password = "Password123!!";
+    // Remote: Apply AdminSettings changes
+    await untangle.AdminSettings.ApplyAsync();
 }
 
 Console.ReadLine(); // Breakpoint here and inspect 'untangle'

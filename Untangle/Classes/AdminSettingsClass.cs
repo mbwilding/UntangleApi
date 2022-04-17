@@ -8,6 +8,9 @@
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnassignedField.Global
 
+using Serilog;
+using static Untangle.Classes.Base;
+
 namespace Untangle.Classes;
 
 public class AdminSettingsClass
@@ -20,10 +23,27 @@ public class AdminSettingsClass
 
     public class AdminSettings
     {
+        private const string ClassName = "AdminSettings";
+        
         public string JavaClass;
         public string DefaultUsername;
         public uint Version;
         public Users Users;
+        
+        /// <summary>
+        /// Applies local changes to remote
+        /// </summary>
+        public async Task ApplyAsync()
+        {
+            var response = await UntangleApi.Untangle?.ExecuteAsync<ResponseString>(
+                $".obj#{UntangleApi.Untangle.WebUi!.AdminManager.ObjectId}.setSettings",
+                UntangleApi.Untangle.AdminSettings!)!;
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+            if (response is not null)
+                Log.Information("Apply: {Name}", ClassName);
+            else
+                Log.Error("Apply: {Name}", ClassName);
+        }
     }
 
     public class Users
