@@ -2,7 +2,6 @@
 // ReSharper disable MemberCanBePrivate.Global
 
 using System.Collections.Specialized;
-using System.Net;
 using System.Text;
 using System.Text.Json;
 using Serilog;
@@ -43,7 +42,7 @@ public class UntangleApi : IDisposable
     public UntangleApi(string host, string username, string password, bool ssl = false, bool logger = true)
     {
         if (logger)
-            Logging();
+            Logging.Init();
         _client = new CookieWebClient();
         _ssl = ssl;
         _host = host;
@@ -59,20 +58,8 @@ public class UntangleApi : IDisposable
             PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
             WriteIndented = false,
             PropertyNameCaseInsensitive = true,
-            IncludeFields = true,
-            //DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
+            IncludeFields = true
         };
-    }
-
-    /// <summary>
-    /// Initializes Serilog
-    /// </summary>
-    private void Logging()
-    {
-        Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Verbose()
-            .WriteTo.Console()
-            .CreateLogger();
     }
 
     /// <summary>
@@ -86,11 +73,15 @@ public class UntangleApi : IDisposable
         if (!await GetTokenAsync())
             return false;
         
-        if (!await GetWebUi())
+        Log.Information("Connected");
+        
+        if (!await GetWebUiAsync())
             return false;
         
-        if (!await GetAdminSettings())
+        if (!await GetAdminSettingsAsync())
             return false;
+        
+        Log.Information("Ready");
 
         return true;
     }
@@ -111,20 +102,21 @@ public class UntangleApi : IDisposable
         {
             _client.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
             var response = await _client.UploadValuesTaskAsync(new Uri(_loginUri), values);
-
-            if (Encoding.Default.GetString(response) == "0")
+            var responseJson = Encoding.Default.GetString(response);
+            if (responseJson == "0")
             {
-                Log.Debug("Authenticated");
+                Log.Debug("Authenticated succesfully");
                 return true;
             }
-
-            Log.Error("Invalid response");
-            return false;
-
+            if (responseJson.Contains("<!DOCTYPE html>"))
+            {
+                Log.Error("Check username and password");
+                return false;
+            }
         }
-        catch (WebException)
+        catch (Exception ex)
         {
-            Log.Error("Failed authentication");
+            Log.Error(ex, "{Error}", ex.InnerException);
         }
 
         return false;
@@ -154,6 +146,7 @@ public class UntangleApi : IDisposable
     {
         int id = Interlocked.Increment(ref _requestCount);
         var request = new Request{ Method = method, Nonce = _token, Id = id, Params = Array.Empty<string>() };
+        // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         if (parameters is not null)
             request.Params = new[] {parameters};
 
@@ -183,18 +176,18 @@ public class UntangleApi : IDisposable
     /// <summary>
     /// Retrieves and sets the local WebUi component
     /// </summary>
-    private async Task<bool> GetWebUi()
+    private async Task<bool> GetWebUiAsync()
     {
         try
         {
             var response = await ExecuteAsync<ResponseWebUi>("UvmContext.getWebuiStartupInfo");
             WebUi = response.Result;
-            Log.Debug("GetWebUiIds retrieved");
+            Log.Debug("WebUi retrieved");
             return true;
         }
         catch
         {
-            Log.Error("GetWebUiIds failed");
+            Log.Error("WebUi failed");
             return false;
         }
     }
@@ -202,7 +195,7 @@ public class UntangleApi : IDisposable
     /// <summary>
     /// Retrieves and sets the local AdminSettings component
     /// </summary>
-    private async Task<bool> GetAdminSettings()
+    private async Task<bool> GetAdminSettingsAsync()
     {
         try
         {

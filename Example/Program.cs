@@ -1,11 +1,17 @@
-﻿var untangle = new Untangle.UntangleApi(
+﻿// Unreachable code
+
+using Serilog;
+
+#pragma warning disable CS0162
+
+var untangle = new Untangle.UntangleApi(
     "192.168.1.1:81",
     "admin",
     "Password123!!",
     false,
     true);
-if (!await untangle.StartAsync())
-    Console.WriteLine("Start up failed");
+
+if (!await untangle.StartAsync()) return;
 
 if (false)
 {
