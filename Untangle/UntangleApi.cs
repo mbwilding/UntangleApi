@@ -139,6 +139,7 @@ public class UntangleApi : IDisposable
 
     /// <summary>
     /// The main method to interact with untangle
+    /// <br/><a href="https://apidocs.untangle.com">Documentation</a>
     /// </summary>
     /// <param name="method">The item being requested, preceded by an object identifier</param>
     /// <param name="parameters">The object to be serialised and sent, used when doing a set</param>
