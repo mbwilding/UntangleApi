@@ -40,7 +40,7 @@ public class UntangleApi : IDisposable
     /// <param name="ssl">HTTPS/SSL</param>
     /// <param name="logger">Console logging from this API</param>
     /// <param name="loggerVerbose">Verbose console logging</param>
-    public UntangleApi(string host,string username, string password, bool ssl = false, bool logger = true, bool loggerVerbose = false)
+    public UntangleApi(string host,string username, string password, bool ssl = false, bool logger = true, bool loggerVerbose = true)
     {
         if (logger)
             Logging.Init(loggerVerbose);
