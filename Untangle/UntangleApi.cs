@@ -226,13 +226,13 @@ public class UntangleApi : IDisposable
     /// <br/><a href="https://apidocs.untangle.com">Documentation</a>
     /// </summary>
     /// <param name="obj">The object to be serialized</param>
-    /// <param name="id">WebUi ObjectId</param>
-    /// <param name="set">Set string excluding set prefix</param>
+    /// <param name="objectId">WebUi ObjectId</param>
+    /// <param name="setting">Setting string excluding set prefix</param>
     /// <param name="className">Name for the log</param>
-    public static async Task ApplyAsync(Object obj, uint id, string set, string className)
+    public static async Task ApplyAsync(Object obj, uint objectId, string setting, string className)
     {
         var response = await Untangle?.ExecuteAsync<ResponseString>(
-            $".obj#{id}.set{set}",
+            $".obj#{objectId}.set{setting}",
             obj)!;
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         if (response is not null)

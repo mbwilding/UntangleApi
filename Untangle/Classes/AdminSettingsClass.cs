@@ -36,8 +36,8 @@ public class AdminSettingsClass
         public async Task ApplyAsync()
         {
             await UntangleApi.ApplyAsync(
-                UntangleApi.Untangle!.AdminSettings!,
-                UntangleApi.Untangle.WebUi!.AdminManager.ObjectId,
+                this,
+                UntangleApi.Untangle!.WebUi!.AdminManager.ObjectId,
                 "Settings",
                 GetType().Name);
         }

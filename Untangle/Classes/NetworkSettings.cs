@@ -67,7 +67,7 @@ public class NetworkSettings
     public async Task ApplyAsync()
     {
         await UntangleApi.ApplyAsync(
-            UntangleApi.Untangle!.WebUi!.NetworkSettings,
+            this,
             UntangleApi.Untangle.WebUi!.NetworkManager.ObjectId,
             "NetworkSettings",
             GetType().Name);
