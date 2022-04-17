@@ -18,7 +18,7 @@ public class UntangleApi : IDisposable
     // ReSharper disable once MemberCanBePrivate.Global
     public WebUi? WebUi;
     public AdminSettings? AdminSettings;
-    
+
     private readonly JsonSerializerOptions _jsonOptions;
     private readonly CookieWebClient _client;
     private readonly bool _ssl;
@@ -30,6 +30,7 @@ public class UntangleApi : IDisposable
     private readonly string _adminUri;
     private readonly string _jsonRpcUri;
     private string _token = string.Empty;
+    private int requestCount;
 
     /// <summary>
     /// The main class to work with UntangleAPI
@@ -132,11 +133,9 @@ public class UntangleApi : IDisposable
     }
 
     // ReSharper disable once MemberCanBePrivate.Global
-    public async Task<T> Execute<T>(string method, object parameters = null!, uint id = 0)
+    public async Task<T> Execute<T>(string method, object parameters = null!)
     {
-        if (id == 0)
-            id = 297;
-
+        int id = Interlocked.Increment(ref requestCount);
         var request = new Request{ Method = method, Nonce = _token, Id = id, Params = Array.Empty<string>() };
         if (parameters is not null)
             request.Params = new[] {parameters};
@@ -185,8 +184,7 @@ public class UntangleApi : IDisposable
         try
         {
             var response = await Execute<AdminSettingsResponse>(
-                $".obj#{WebUi!.AdminManager.ObjectId}.getSettings",
-                id: 124);
+                $".obj#{WebUi!.AdminManager.ObjectId}.getSettings");
             AdminSettings = response.Result;
             Log.Debug("AdminSettings retrieved");
             return true;
@@ -204,8 +202,7 @@ public class UntangleApi : IDisposable
         {
             var response = await Execute<ResponseString>(
                 $".obj#{WebUi!.AdminManager.ObjectId}.setSettings",
-                AdminSettings!,
-                id: 179);
+                AdminSettings!);
             Log.Debug("AdminSettings set");
             return true;
         }

@@ -14,7 +14,7 @@ public static class Base
 {
     internal class Request
     {
-        public uint Id;
+        public int Id;
         public string Nonce;
         public string Method;
         public object Params;
@@ -23,7 +23,7 @@ public static class Base
     public class ResponseString
     {
         public string Result;
-        public uint Id;
+        public int Id;
     }
     
     public class ResponseObject
