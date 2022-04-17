@@ -1,2 +1,2 @@
 # UntangleApi
-C# wrapper for the Untangle API
+C# implementation of the Untangle API

@@ -8,6 +8,8 @@
 // ReSharper disable ClassNeverInstantiated.Global
 // ReSharper disable UnassignedField.Global
 
+using Serilog;
+
 namespace Untangle.Classes;
 
 public class NetworkSettings
@@ -56,6 +58,21 @@ public class NetworkSettings
     // TODO UpnpSettings
     // TODO NatRules
     // TODO QosSettings
+    
+    // TODO Disabled because class needs to be fully implemented first
+    /*
+    /// <summary>
+    /// Applies local changes to remote
+    /// </summary>
+    public async Task ApplyAsync()
+    {
+        await UntangleApi.ApplyAsync(
+            UntangleApi.Untangle!.WebUi!.NetworkSettings,
+            UntangleApi.Untangle.WebUi!.NetworkManager.ObjectId,
+            "NetworkSettings",
+            GetType().Name);
+    }
+    */
 }
 
 public class BypassRules

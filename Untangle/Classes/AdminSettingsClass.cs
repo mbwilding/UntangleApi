@@ -35,14 +35,11 @@ public class AdminSettingsClass
         /// </summary>
         public async Task ApplyAsync()
         {
-            var response = await UntangleApi.Untangle?.ExecuteAsync<ResponseString>(
-                $".obj#{UntangleApi.Untangle.WebUi!.AdminManager.ObjectId}.setSettings",
-                UntangleApi.Untangle.AdminSettings!)!;
-            // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
-            if (response is not null)
-                Log.Information("Apply: {Name}", ClassName);
-            else
-                Log.Error("Apply: {Name}", ClassName);
+            await UntangleApi.ApplyAsync(
+                UntangleApi.Untangle!.AdminSettings!,
+                UntangleApi.Untangle.WebUi!.AdminManager.ObjectId,
+                "Settings",
+                GetType().Name);
         }
     }
 
