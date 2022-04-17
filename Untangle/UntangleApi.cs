@@ -30,7 +30,7 @@ public class UntangleApi : IDisposable
     private readonly string _adminUri;
     private readonly string _jsonRpcUri;
     private string _token = string.Empty;
-    private int requestCount;
+    private int _requestCount;
 
     /// <summary>
     /// The main class to work with UntangleAPI
@@ -64,6 +64,9 @@ public class UntangleApi : IDisposable
         };
     }
 
+    /// <summary>
+    /// Initializes Serilog
+    /// </summary>
     private void Logging()
     {
         Log.Logger = new LoggerConfiguration()
@@ -72,12 +75,15 @@ public class UntangleApi : IDisposable
             .CreateLogger();
     }
 
+    /// <summary>
+    /// Authenticates and saves the cookie for the WebClient
+    /// </summary>
     public async Task<bool> StartAsync()
     {
-        if (!await AuthenticationAsync())
+        if (!await GetAuthAsync())
             return false;
         
-        if (!await GetAuthenticationToken())
+        if (!await GetTokenAsync())
             return false;
         
         if (!await GetWebUi())
@@ -89,7 +95,10 @@ public class UntangleApi : IDisposable
         return true;
     }
 
-    private async Task<bool> AuthenticationAsync()
+    /// <summary>
+    /// Authenticates and saves the cookie for the WebClient
+    /// </summary>
+    private async Task<bool> GetAuthAsync()
     {
         _client.Headers.Remove("Content-Type");
         var values = new NameValueCollection
@@ -121,21 +130,29 @@ public class UntangleApi : IDisposable
         return false;
     }
 
-    private async Task<bool> GetAuthenticationToken()
+    /// <summary>
+    /// Retrieves and sets the token used by all transactions through Execute
+    /// </summary>
+    private async Task<bool> GetTokenAsync()
     {
         _client.Headers.Remove("Content-Type");
         _client.Headers.Add("Content-Type", "application/json");
         
-        var result = await Execute<ResponseString>("system.getNonce");
+        var result = await ExecuteAsync<ResponseString>("system.getNonce");
         _token = result.Result;
         Log.Debug("Token retrieved");
         return true;
     }
 
+    /// <summary>
+    /// The main method to interact with untangle
+    /// </summary>
+    /// <param name="method">The item being requested, preceded by an object identifier</param>
+    /// <param name="parameters">The object to be serialised and sent, used when doing a set</param>
     // ReSharper disable once MemberCanBePrivate.Global
-    public async Task<T> Execute<T>(string method, object parameters = null!)
+    public async Task<T> ExecuteAsync<T>(string method, object parameters = null!)
     {
-        int id = Interlocked.Increment(ref requestCount);
+        int id = Interlocked.Increment(ref _requestCount);
         var request = new Request{ Method = method, Nonce = _token, Id = id, Params = Array.Empty<string>() };
         if (parameters is not null)
             request.Params = new[] {parameters};
@@ -163,11 +180,14 @@ public class UntangleApi : IDisposable
         return response;
     }
 
+    /// <summary>
+    /// Retrieves and sets the local WebUi component
+    /// </summary>
     private async Task<bool> GetWebUi()
     {
         try
         {
-            var response = await Execute<ResponseWebUi>("UvmContext.getWebuiStartupInfo");
+            var response = await ExecuteAsync<ResponseWebUi>("UvmContext.getWebuiStartupInfo");
             WebUi = response.Result;
             Log.Debug("GetWebUiIds retrieved");
             return true;
@@ -179,11 +199,14 @@ public class UntangleApi : IDisposable
         }
     }
     
+    /// <summary>
+    /// Retrieves and sets the local AdminSettings component
+    /// </summary>
     private async Task<bool> GetAdminSettings()
     {
         try
         {
-            var response = await Execute<AdminSettingsResponse>(
+            var response = await ExecuteAsync<AdminSettingsResponse>(
                 $".obj#{WebUi!.AdminManager.ObjectId}.getSettings");
             AdminSettings = response.Result;
             Log.Debug("AdminSettings retrieved");
@@ -196,11 +219,14 @@ public class UntangleApi : IDisposable
         }
     }
     
+    /// <summary>
+    /// Sets the remote AdminSettings from local
+    /// </summary>
     public async Task<bool> SetAdminSettingsAsync()
     {
         try
         {
-            var response = await Execute<ResponseString>(
+            var response = await ExecuteAsync<ResponseString>(
                 $".obj#{WebUi!.AdminManager.ObjectId}.setSettings",
                 AdminSettings!);
             Log.Debug("AdminSettings set");

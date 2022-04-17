@@ -2,6 +2,9 @@ using System.Net;
 
 namespace Untangle.SupportClasses;
 
+/// <summary>
+/// Wrapped WebClient with automatic cookie handling
+/// </summary>
 internal class CookieWebClient : WebClient
 {
     private readonly CookieContainer _cookies = new();
