@@ -12,10 +12,4 @@
       <ProjectReference Include="..\Untangle\Untangle.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Reference Include="UntangleApi">
-        <HintPath>bin\Debug\net6.0\UntangleApi.dll</HintPath>
-      </Reference>
-    </ItemGroup>
-
 </Project>
