@@ -1,15 +1,4 @@
-//Non-nullable field is uninitialized
-#pragma warning disable CS8618
-// Non-accessed field
-#pragma warning disable CS0414
-// Unassigned field
-#pragma warning disable CS0649
-
-// ReSharper disable ClassNeverInstantiated.Global
-// ReSharper disable UnassignedField.Global
-
-using Serilog;
-using static Untangle.Classes.Base;
+using System.Text.Json.Serialization;
 
 namespace Untangle.Classes;
 
@@ -17,48 +6,76 @@ public class AdminSettingsClass
 {
     public class AdminSettingsResponse
     {
-        public AdminSettings Result;
-        public uint Id;
+        [JsonPropertyName("result")]
+        public AdminSettings Result { get; set; }
+
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
     }
 
     public class AdminSettings
     {
-        private const string ClassName = "AdminSettings";
-        
-        public string JavaClass;
-        public string DefaultUsername;
-        public uint Version;
-        public Users Users;
+        [JsonPropertyName("javaClass")]
+        public string JavaClass { get; set; }
+
+        [JsonPropertyName("defaultUsername")]
+        public string DefaultUsername { get; set; }
+
+        [JsonPropertyName("version")]
+        public int Version { get; set; }
+
+        [JsonPropertyName("users")]
+        public Users Users { get; set; }
         
         /// <summary>
         /// Applies local changes to remote
         /// </summary>
         public async Task ApplyAsync()
         {
+            // TODO
             await UntangleApi.ApplyAsync(
                 this,
-                UntangleApi.Untangle!.WebUi!.AdminManager.ObjectId,
-                "Settings",
+                UntangleApi.Untangle!.Uvm.AdminManager!.ObjectId,
                 GetType().Name);
         }
     }
 
     public class Users
     {
-        public string JavaClass;
-        public List<UserSettings> List;
+        [JsonPropertyName("javaClass")]
+        public string JavaClass { get; set; }
+
+        [JsonPropertyName("list")]
+        public List<UserSettings> List { get; set; }
     }
 
     public class UserSettings
     {
-        public string EmailAddress;
-        public string Password;
-        public bool EmailAlerts;
-        public string JavaClass;
-        public string PasswordHashShadow;
-        public bool EmailSummaries;
-        public string Descriptions;
-        public string PasswordHashBase64;
-        public string Username;
+        [JsonPropertyName("emailAddress")]
+        public string? EmailAddress { get; set; }
+
+        [JsonPropertyName("password")]
+        public string? Password { get; set; }
+
+        [JsonPropertyName("emailAlerts")]
+        public bool? EmailAlerts { get; set; }
+
+        [JsonPropertyName("javaClass")]
+        public string? JavaClass { get; set; }
+
+        [JsonPropertyName("passwordHashShadow")]
+        public string? PasswordHashShadow { get; set; }
+
+        [JsonPropertyName("emailSummaries")]
+        public bool? EmailSummaries { get; set; }
+
+        [JsonPropertyName("description")]
+        public string? Description { get; set; }
+
+        [JsonPropertyName("passwordHashBase64")]
+        public string? PasswordHashBase64 { get; set; }
+
+        [JsonPropertyName("username")]
+        public string? Username { get; set; }
     }
 }

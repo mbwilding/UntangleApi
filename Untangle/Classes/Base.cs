@@ -1,12 +1,4 @@
-//Non-nullable field is uninitialized
-#pragma warning disable CS8618
-// Non-accessed field
-#pragma warning disable CS0414
-// Unassigned field
-#pragma warning disable CS0649
-
-// ReSharper disable ClassNeverInstantiated.Global
-// ReSharper disable UnassignedField.Global
+using System.Text.Json.Serialization;
 
 namespace Untangle.Classes;
 
@@ -14,56 +6,40 @@ public static class Base
 {
     internal class Request
     {
-        public int Id;
-        public string Nonce;
-        public string Method;
-        public object Params;
+        [JsonPropertyName("id")]
+        public int? Id { get; set; }
+        
+        [JsonPropertyName("nonce")]
+        public string? Nonce { get; set; }
+        
+        [JsonPropertyName("method")]
+        public string? Method { get; set; }
+        
+        [JsonPropertyName("params")]
+        public object? Params { get; set; }
     }
     
     public class ResponseString
     {
-        public string Result;
-        public int Id;
-    }
-    
-    public class ResponseObject
-    {
-        public string JavaClass;
-        public string JsonRpcType;
-        public uint ObjectId;
+        [JsonPropertyName("result")]
+        public string? Result { get; set; }
+        
+        [JsonPropertyName("id")]
+        public int? Id { get; set; }
     }
 
     internal class ErrorResponse
     {
-        public Error Error;
+        [JsonPropertyName("error")]
+        public Error? Error { get; set; }
     }
 
     internal class Error
     {
-        public string Msg;
-        public int Code;
-    }
-
-    public class Translations
-    {
-        // ReSharper disable InconsistentNaming
-        public string? Thousand_Sep;
-        public string? TimeStamp_Fmt;
-        public string? Date_Fmt;
-        public string? Decimal_Sep;
-        // ReSharper enable InconsistentNaming
-    }
-
-    public class LanguageSettings
-    {
-        public string OverrideDateFmt;
-        public string OverrideTimestampFmt;
-        public int LastSynchronized;
-        public string OverrideDecimalSep;
-        public string JavaClass;
-        public string Language;
-        public string RegionalFormats;
-        public string OverrideThousandSep;
-        public string Source;
+        [JsonPropertyName("msg")]
+        public string? Msg { get; set; }
+        
+        [JsonPropertyName("code")]
+        public int? Code { get; set; }
     }
 }

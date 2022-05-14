@@ -5,9 +5,9 @@ using System.Collections.Specialized;
 using System.Text;
 using System.Text.Json;
 using Serilog;
+using Untangle.Classes;
 using Untangle.SupportClasses;
 using static Untangle.Classes.Base;
-using static Untangle.Classes.WebUiClass;
 using static Untangle.Classes.AdminSettingsClass;
 
 namespace Untangle;
@@ -21,10 +21,9 @@ public class UntangleApi : IDisposable
     /// </summary>
     internal static UntangleApi? Untangle;
     
-    public WebUi? WebUi;
+    public Classes.Uvm Uvm;
     public AdminSettings? AdminSettings;
-
-    private readonly JsonSerializerOptions _jsonOptions;
+    
     private readonly CookieWebClient _client;
     private readonly bool _ssl;
     private readonly string _host;
@@ -48,6 +47,7 @@ public class UntangleApi : IDisposable
     /// <param name="loggerVerbose">Verbose console logging</param>
     public UntangleApi(string host,string username, string password, bool ssl = false, bool logger = true, bool loggerVerbose = true)
     {
+        Uvm = new Classes.Uvm();
         Untangle = this;
         if (logger)
             Logging.Init(loggerVerbose);
@@ -60,14 +60,6 @@ public class UntangleApi : IDisposable
         _loginUri = $"{_uri}/auth/login";
         _adminUri = $"{_uri}/admin";
         _jsonRpcUri = $"{_adminUri}/JSON-RPC";
-        _jsonOptions = new JsonSerializerOptions
-        {
-            DictionaryKeyPolicy = JsonNamingPolicy.CamelCase,
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-            WriteIndented = false,
-            PropertyNameCaseInsensitive = true,
-            IncludeFields = true
-        };
     }
 
     /// <summary>
@@ -82,8 +74,11 @@ public class UntangleApi : IDisposable
             return false;
         
         Log.Information("Connected");
-        
+
         if (!await GetWebUiAsync())
+            return false;
+        
+        if (!await GetSetupAsync())
             return false;
         
         if (!await GetAdminSettingsAsync())
@@ -109,14 +104,14 @@ public class UntangleApi : IDisposable
         try
         {
             _client.Headers.Add("Content-Type", "application/x-www-form-urlencoded");
-            var response = await _client.UploadValuesTaskAsync(new Uri(_loginUri), values);
-            var responseJson = Encoding.Default.GetString(response);
-            if (responseJson == "0")
+            var responseBytes = await _client.UploadValuesTaskAsync(new Uri(_loginUri), values);
+            var responseString = Encoding.Default.GetString(responseBytes);
+            if (responseString == "0")
             {
-                Log.Debug("Authenticated succesfully");
+                Log.Debug("Authenticated successfully");
                 return true;
             }
-            if (responseJson.Contains("<!DOCTYPE html>"))
+            if (responseString.Contains("<!DOCTYPE html>"))
             {
                 Log.Error("Check username and password");
                 return false;
@@ -139,7 +134,7 @@ public class UntangleApi : IDisposable
         _client.Headers.Add("Content-Type", "application/json");
         
         var result = await ExecuteAsync<ResponseString>("system.getNonce");
-        _token = result.Result;
+        _token = result.Result!;
         Log.Debug("Token retrieved");
         return true;
     }
@@ -157,22 +152,22 @@ public class UntangleApi : IDisposable
         var request = new Request{ Method = method, Nonce = _token, Id = id, Params = Array.Empty<string>() };
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         if (parameters is not null)
-            request.Params = new[] {parameters};
+            request.Params = new[] { parameters };
 
         T response = default!;
         
         try
         {
-            string jsonRequest = JsonSerializer.Serialize(request, _jsonOptions);
+            string jsonRequest = JsonSerializer.Serialize(request);
             string jsonResponse = await _client.UploadStringTaskAsync(_jsonRpcUri, jsonRequest);
             if (jsonResponse.Contains("\"error\""))
             {
-                var error = JsonSerializer.Deserialize<ErrorResponse>(jsonResponse, _jsonOptions);
+                var error = JsonSerializer.Deserialize<ErrorResponse>(jsonResponse);
                 // TODO Handle Error
                 Log.Error("{Code}: {Msg}", error!.Error.Code, error.Error.Msg);
                 return response;
             }
-            response = JsonSerializer.Deserialize<T>(jsonResponse, _jsonOptions)!;
+            response = JsonSerializer.Deserialize<T>(jsonResponse)!;
         }
         catch (Exception ex)
         {
@@ -183,20 +178,86 @@ public class UntangleApi : IDisposable
     }
 
     /// <summary>
-    /// Retrieves and sets the local WebUi component
+    /// Retrieves the WebUi component
     /// </summary>
     private async Task<bool> GetWebUiAsync()
     {
         try
         {
-            var response = await ExecuteAsync<ResponseWebUi>("UvmContext.getWebuiStartupInfo");
-            WebUi = response.Result;
+            var response = await ExecuteAsync<WebUiResponse>("UvmContext.getWebuiStartupInfo");
+            Uvm.MetricManager = response.Result.MetricManager;
+            Uvm.ServerSerialnumber = response.Result.ServerSerialnumber;
+            Uvm.AppManager = response.Result.AppManager;
+            Uvm.UriManager = response.Result.UriManager;
+            Uvm.SystemManager = response.Result.SystemManager;
+            Uvm.BrandingManager = response.Result.BrandingManager;
+            Uvm.CompanyName = response.Result.CompanyName;
+            Uvm.RegionName = response.Result.RegionName;
+            Uvm.TimeZoneOffset = response.Result.TimeZoneOffset;
+            Uvm.SkinSettings = response.Result.SkinSettings;
+            Uvm.AppsViews = response.Result.AppsViews;
+            Uvm.CompanyUrl = response.Result.CompanyUrl;
+            Uvm.ApplianceModel = response.Result.ApplianceModel;
+            Uvm.NotificationManager = response.Result.NotificationManager;
+            Uvm.DashboardManager = response.Result.DashboardManager;
+            Uvm.Hostname = response.Result.Hostname;
+            Uvm.Translations = response.Result.Translations;
+            Uvm.IsExpertMode = response.Result.IsExpertMode;
+            Uvm.StoreUrl = response.Result.StoreUrl;
+            Uvm.EventManager = response.Result.EventManager;
+            Uvm.UserTable = response.Result.UserTable;
+            Uvm.HostTable = response.Result.HostTable;
+            Uvm.SupportEnabled = response.Result.SupportEnabled;
+            Uvm.Architecture = response.Result.Architecture;
+            Uvm.AdminManager = response.Result.AdminManager;
+            Uvm.ExecManager = response.Result.ExecManager;
+            Uvm.NetworkSettings = response.Result.NetworkSettings;
+            Uvm.NetworkManager = response.Result.NetworkManager;
+            Uvm.FullVersionAndRevision = response.Result.FullVersionAndRevision;
+            Uvm.LanguageSettings = response.Result.LanguageSettings;
+            Uvm.HelpUrl = response.Result.HelpUrl;
+            Uvm.Version = response.Result.Version;
+            Uvm.LanguageManager = response.Result.LanguageManager;
+            Uvm.AuthenticationManager = response.Result.AuthenticationManager;
+            Uvm.FullVersion = response.Result.FullVersion;
+            Uvm.SkinManager = response.Result.SkinManager;
+            Uvm.SkinInfo = response.Result.SkinInfo;
+            Uvm.SessionMonitor = response.Result.SessionMonitor;
+            Uvm.SettingsManager = response.Result.SettingsManager;
+            Uvm.ServerUid = response.Result.ServerUid;
+            Uvm.InstallType = response.Result.InstallType;
+            Uvm.IsRegistered = response.Result.IsRegistered;
+            Uvm.DeviceTable = response.Result.DeviceTable;
+            Uvm.ReportsEnabled = response.Result.ReportsEnabled;
             Log.Debug("WebUi retrieved");
             return true;
         }
         catch
         {
             Log.Error("WebUi failed");
+            return false;
+        }
+    }
+    
+    /// <summary>
+    /// Retrieves the local Setup component
+    /// </summary>
+    private async Task<bool> GetSetupAsync()
+    {
+        try
+        {
+            var response = await ExecuteAsync<SetupResponse>("UvmContext.getSetupStartupInfo");
+            Uvm.AdminManager = response.Result.AdminManager;
+            Uvm.ConnectivityTester = response.Result.ConnectivityTester;
+            Uvm.MailSender = response.Result.MailSender;
+            Uvm.NetworkManager = response.Result.NetworkManager;
+            Uvm.SystemManager = response.Result.SystemManager;
+            Log.Debug("Setup retrieved");
+            return true;
+        }
+        catch
+        {
+            Log.Error("Setup failed");
             return false;
         }
     }
@@ -209,7 +270,7 @@ public class UntangleApi : IDisposable
         try
         {
             var response = await ExecuteAsync<AdminSettingsResponse>(
-                $".obj#{WebUi!.AdminManager.ObjectId}.getSettings");
+                $".obj#{Uvm!.AdminManager.ObjectId}.getSettings");
             AdminSettings = response.Result;
             Log.Debug("AdminSettings retrieved");
             return true;
@@ -227,12 +288,11 @@ public class UntangleApi : IDisposable
     /// </summary>
     /// <param name="obj">The object to be serialized</param>
     /// <param name="objectId">WebUi ObjectId</param>
-    /// <param name="setting">Setting string excluding set prefix</param>
     /// <param name="className">Name for the log</param>
-    public static async Task ApplyAsync(Object obj, uint objectId, string setting, string className)
+    public static async Task ApplyAsync(Object obj, int objectId, string className)
     {
         var response = await Untangle?.ExecuteAsync<ResponseString>(
-            $".obj#{objectId}.set{setting}",
+            $".obj#{objectId}.setSettings",
             obj)!;
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
         if (response is not null)
