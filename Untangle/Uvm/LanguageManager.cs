@@ -8,7 +8,7 @@ public class LanguageManager
     public string JavaClass { get; set; }
 
     [JsonPropertyName("JSONRPCType")]
-    public string JSONRPCType { get; set; }
+    public string JsonRpcType { get; set; }
 
     [JsonPropertyName("objectID")]
     public int ObjectID { get; set; }
